@@ -1,0 +1,259 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --color-aura-navy: #0F254B;
+  --color-aura-gray: #f5f5f5;
+  --color-aura-accent: #0F254B;
+}
+
+/* ─── CSS Design Tokens ─────────────────────────────────────────── */
+:root {
+  /* Light theme */
+  --bg-primary:       #ffffff;
+  --bg-secondary:     #f5f5f5;
+  --bg-tertiary:      #f0f0f0;
+  --text-primary:     #0F254B;
+  --text-secondary:   rgba(15, 37, 75, 0.6);
+  --text-muted:       rgba(15, 37, 75, 0.4);
+  --border-subtle:    rgba(15, 37, 75, 0.05);
+  --border-light:     rgba(15, 37, 75, 0.1);
+  --border-medium:    rgba(15, 37, 75, 0.2);
+  --glass-bg:         rgba(255, 255, 255, 0.6);
+  --glass-bg-strong:  rgba(255, 255, 255, 0.85);
+  --glass-bg-solid:   rgba(255, 255, 255, 0.95);
+  --shadow-color:     rgba(15, 37, 75, 0.08);
+  --shadow-strong:    rgba(15, 37, 75, 0.16);
+  --watermark-stroke: rgba(15, 37, 75, 0.2);
+  --watermark-fill:   rgba(15, 37, 75, 0.06);
+  --noise-opacity:    0.12;
+  --noise-blend:      overlay;
+  --accent:           #0F254B;
+  --accent-hover:     rgba(15, 37, 75, 0.9);
+  --accent-subtle:    rgba(15, 37, 75, 0.05);
+  --accent-subtle2:   rgba(15, 37, 75, 0.1);
+  --accent-subtle3:   rgba(15, 37, 75, 0.2);
+  --gradient-text-from: #0F254B;
+  --gradient-text-to:   rgba(15, 37, 75, 0.7);
+  --theme-transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+/* Dark theme */
+.dark {
+  --bg-primary:       #0a0f1a;
+  --bg-secondary:     #0f1624;
+  --bg-tertiary:      #141d2e;
+  --text-primary:     #e8edf5;
+  --text-secondary:   rgba(232, 237, 245, 0.65);
+  --text-muted:       rgba(232, 237, 245, 0.4);
+  --border-subtle:    rgba(232, 237, 245, 0.06);
+  --border-light:     rgba(232, 237, 245, 0.1);
+  --border-medium:    rgba(232, 237, 245, 0.18);
+  --glass-bg:         rgba(15, 22, 36, 0.7);
+  --glass-bg-strong:  rgba(15, 22, 36, 0.88);
+  --glass-bg-solid:   rgba(15, 22, 36, 0.97);
+  --shadow-color:     rgba(0, 0, 0, 0.3);
+  --shadow-strong:    rgba(0, 0, 0, 0.5);
+  --watermark-stroke: rgba(232, 237, 245, 0.12);
+  --watermark-fill:   rgba(232, 237, 245, 0.03);
+  --noise-opacity:    0.06;
+  --noise-blend:      soft-light;
+  --accent:           #4a7fd4;
+  --accent-hover:     #5a8fe4;
+  --accent-subtle:    rgba(74, 127, 212, 0.1);
+  --accent-subtle2:   rgba(74, 127, 212, 0.15);
+  --accent-subtle3:   rgba(74, 127, 212, 0.25);
+  --gradient-text-from: #7eb3ff;
+  --gradient-text-to:   rgba(126, 179, 255, 0.7);
+}
+
+/* ─── Base ──────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    transition: var(--theme-transition);
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative;
+    font-size: 15px;
+    transition: var(--theme-transition);
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: #ffffff;
+  }
+
+  h1 { @apply text-4xl md:text-6xl lg:text-7xl font-display font-bold tracking-tighter leading-[1.1]; }
+  h2 { @apply text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tighter leading-[1.1]; }
+  h3 { @apply text-2xl md:text-3xl font-display font-bold tracking-tight; }
+
+  /* Grain texture */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: var(--noise-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    mix-blend-mode: var(--noise-blend);
+    transition: opacity 0.4s ease;
+  }
+
+  .alcantara-bg {
+    background-color: var(--bg-primary);
+    background-image:
+      radial-gradient(at 0% 0%,   var(--accent-subtle)  0px, transparent 50%),
+      radial-gradient(at 50% 0%,  var(--accent-subtle)  0px, transparent 50%),
+      radial-gradient(at 100% 0%, var(--accent-subtle)  0px, transparent 50%),
+      radial-gradient(at 0% 50%,  var(--accent-subtle)  0px, transparent 50%),
+      radial-gradient(at 100% 50%,var(--accent-subtle)  0px, transparent 50%),
+      radial-gradient(at 0% 100%, var(--accent-subtle)  0px, transparent 50%),
+      radial-gradient(at 50% 100%,var(--accent-subtle)  0px, transparent 50%),
+      radial-gradient(at 100% 100%,var(--accent-subtle) 0px, transparent 50%);
+    background-attachment: fixed;
+    transition: background-color 0.4s ease;
+  }
+
+  .alcantara-texture {
+    background-color: var(--bg-primary);
+    background-image:
+      radial-gradient(at 0% 0%,   var(--accent-subtle) 0px, transparent 50%),
+      radial-gradient(at 100% 100%,var(--accent-subtle) 0px, transparent 50%);
+    background-attachment: fixed;
+    transition: background-color 0.4s ease;
+  }
+}
+
+/* ─── Utilities ─────────────────────────────────────────────────── */
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(to right, var(--gradient-text-from), var(--gradient-text-to));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass-card {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 1px 3px var(--shadow-color);
+    transition: var(--theme-transition), box-shadow 0.3s ease;
+  }
+
+  .navy-button {
+    background-color: var(--accent);
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+  }
+  .navy-button:hover {
+    background-color: var(--accent-hover);
+    box-shadow: 0 8px 24px var(--accent-subtle3);
+  }
+
+  .outline-button {
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+  }
+  .outline-button:hover {
+    background-color: var(--accent-subtle);
+    border-color: var(--border-medium);
+  }
+
+  .section-padding {
+    @apply py-20 md:py-24;
+  }
+
+  /* Theme toggle button */
+  .theme-toggle {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-light);
+    background-color: var(--accent-subtle);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+  .theme-toggle:hover {
+    background-color: var(--accent-subtle2);
+    border-color: var(--border-medium);
+    transform: scale(1.08);
+  }
+  .theme-toggle:active {
+    transform: scale(0.95);
+  }
+}
+
+/* ─── Marquee ───────────────────────────────────────────────────── */
+@keyframes marquee-left {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marquee-right {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.marquee-track  { will-change: transform; }
+.marquee-left   { animation: marquee-left  24s linear infinite; }
+.marquee-right  { animation: marquee-right 28s linear infinite; }
+
+/* ─── Watermark ─────────────────────────────────────────────────── */
+.auraa-watermark {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--watermark-fill);
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px var(--watermark-stroke);
+  transition: -webkit-text-stroke-color 0.4s ease;
+}
+
+/* ─── Theme transition on all elements ─────────────────────────── */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+  transition-duration: 0.35s;
+  transition-timing-function: ease;
+}
+/* But don't slow down animations/transforms */
+.marquee-track,
+.marquee-left,
+.marquee-right,
+[class*="animate-"],
+[class*="transition-"],
+[class*="duration-"] {
+  transition-property: none;
+}
