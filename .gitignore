@@ -1,3 +1,9 @@
+# Database
+data/
+*.db
+*.db-shm
+*.db-wal
+
 # Nuxt
 .nuxt/
 .output/
