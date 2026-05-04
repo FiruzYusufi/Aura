@@ -57,13 +57,21 @@ export default defineEventHandler(async (event) => {
   // Generate PDF + Send email in background (non-blocking)
   setImmediate(async () => {
     try {
+      console.log(`[Brief] Starting email process for #${brief.id}...`)
+      
       const pdf = await generateBriefPdf(brief)
+      console.log(`[Brief] PDF generated for #${brief.id} (${pdf.length} bytes)`)
+      
       await sendBriefEmail(brief, pdf)
-      await updateBriefStatus(brief.id, 'sent')
       console.log(`[Brief] Email sent for #${brief.id}`)
+      
+      await updateBriefStatus(brief.id, 'sent')
+      console.log(`[Brief] Status updated to 'sent' for #${brief.id}`)
     }
     catch (err) {
-      console.error(`[Brief] Email failed for #${brief.id}:`, err)
+      const errorMsg = err instanceof Error ? err.message : String(err)
+      console.error(`[Brief] Email failed for #${brief.id}: ${errorMsg}`)
+      console.error(err)
       await updateBriefStatus(brief.id, 'email_failed').catch(() => {})
     }
   })

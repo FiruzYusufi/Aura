@@ -1,8 +1,10 @@
 import nodemailer from 'nodemailer'
 import type { BriefRecord } from '../db/index'
 
-function getTransporter() {
-  const config = useRuntimeConfig()
+function getTransporter(config: any) {
+  if (!config.smtpUser || !config.smtpPass) {
+    throw new Error('SMTP_USER and SMTP_PASS environment variables are required')
+  }
 
   // Use configured SMTP or fallback to Gmail
   return nodemailer.createTransport({
@@ -10,7 +12,7 @@ function getTransporter() {
     port:   Number(config.smtpPort) || 587,
     secure: config.smtpSecure === 'true',
     auth: {
-      user: config.smtpUser || config.emailFrom,
+      user: config.smtpUser,
       pass: config.smtpPass,
     },
   })
@@ -58,7 +60,7 @@ export async function sendBriefEmail(brief: BriefRecord, pdfBuffer: Buffer): Pro
   const to = config.emailTo || 'ioauura@gmail.com'
   const from = config.emailFrom || 'noreply@auraa.digital'
 
-  const transporter = getTransporter()
+  const transporter = getTransporter(config)
 
   const html = `
 <!DOCTYPE html>
@@ -199,7 +201,7 @@ export async function sendBriefEmail(brief: BriefRecord, pdfBuffer: Buffer): Pro
 </html>
   `.trim()
 
-  await transporter.sendMail({
+  transporter.sendMail({
     from: `"Auraa Digital" <${from}>`,
     to,
     subject: `📋 New brief #${String(brief.id).padStart(4, '0')} — ${safeText(brief.name)} (${safeText(brief.project_type)})`,
