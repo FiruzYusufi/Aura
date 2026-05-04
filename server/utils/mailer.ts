@@ -3,6 +3,13 @@ import type { BriefRecord } from '../db/index'
 
 function getTransporter(config: any) {
   if (!config.smtpUser || !config.smtpPass) {
+    console.error('❌ SMTP Configuration Error:')
+    console.error('   SMTP_USER:', config.smtpUser ? '✓ Set' : '✗ Missing')
+    console.error('   SMTP_PASS:', config.smtpPass ? '✓ Set' : '✗ Missing')
+    console.error('')
+    console.error('Make sure .env file exists in project root with:')
+    console.error('   SMTP_USER="your-email@gmail.com"')
+    console.error('   SMTP_PASS="your-app-password"')
     throw new Error('SMTP_USER and SMTP_PASS environment variables are required')
   }
 
