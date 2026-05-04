@@ -10,8 +10,26 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
   },
 
+  // Nitro config for Node.js native modules
+  nitro: {
+    externals: {
+      // pdfkit and nodemailer use Node.js built-ins — keep external
+      external: ['pdfkit', 'nodemailer'],
+    },
+  },
+
   runtimeConfig: {
     geminiApiKey: process.env.GEMINI_API_KEY || '',
+    // Email / SMTP
+    emailTo:    process.env.EMAIL_TO   || 'ioauura@gmail.com',
+    emailFrom:  process.env.EMAIL_FROM || 'noreply@auraa.digital',
+    smtpHost:   process.env.SMTP_HOST  || 'smtp.gmail.com',
+    smtpPort:   process.env.SMTP_PORT  || '587',
+    smtpSecure: process.env.SMTP_SECURE || 'false',
+    smtpUser:   process.env.SMTP_USER  || '',
+    smtpPass:   process.env.SMTP_PASS  || '',
+    // Admin
+    adminToken: process.env.ADMIN_TOKEN || 'change-me-in-production',
     public: {
       appUrl: process.env.APP_URL || '',
     },

@@ -235,11 +235,32 @@
                 <button type="button" class="outline-button flex-1" @click="prevStep">Назад</button>
                 <button
                   type="submit"
-                  class="navy-button flex-[2] flex items-center justify-center gap-2"
+                  :disabled="isSubmitting"
+                  class="navy-button flex-[2] flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  Отправить бриф <Send class="w-4 h-4" />
+                  <span v-if="isSubmitting" class="flex items-center gap-2">
+                    <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+                    Отправляем...
+                  </span>
+                  <span v-else class="flex items-center gap-2">
+                    Отправить бриф <Send class="w-4 h-4" />
+                  </span>
                 </button>
               </div>
+
+              <!-- Error message -->
+              <Transition name="step-slide">
+                <div
+                  v-if="submitError"
+                  class="mt-4 p-4 rounded-xl border text-sm"
+                  style="background-color: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.2); color: #dc2626"
+                >
+                  ⚠️ {{ submitError }}
+                </div>
+              </Transition>
             </div>
           </Transition>
         </form>
@@ -264,6 +285,8 @@ const step1Fields = [
 
 const step = ref(1)
 const submitted = ref(false)
+const isSubmitting = ref(false)
+const submitError = ref<string | null>(null)
 const isProjectTypeOpen = ref(false)
 const projectTypeRef = ref<HTMLElement | null>(null)
 
@@ -281,7 +304,33 @@ const inputStyle = computed(() => ({
 
 function nextStep() { step.value++ }
 function prevStep() { step.value-- }
-function handleSubmit() { submitted.value = true }
+
+async function handleSubmit() {
+  if (isSubmitting.value) return
+  isSubmitting.value = true
+  submitError.value = null
+
+  try {
+    await $fetch('/api/brief', {
+      method: 'POST',
+      body: {
+        name:        formData.name,
+        email:       formData.email,
+        phone:       formData.phone,
+        company:     formData.company,
+        projectType: formData.projectType,
+        budget:      formData.budget,
+        description: formData.description,
+        timeline:    formData.timeline,
+      },
+    })
+    submitted.value = true
+  } catch (err: any) {
+    submitError.value = err?.data?.statusMessage || 'Ошибка при отправке. Попробуйте ещё раз.'
+  } finally {
+    isSubmitting.value = false
+  }
+}
 
 function handleClickOutside(e: MouseEvent) {
   if (projectTypeRef.value && !projectTypeRef.value.contains(e.target as Node)) {
